@@ -19,7 +19,7 @@ Also gather the git diff if applicable (use `git diff` or `git diff --staged`).
 
 ### Codex Review (Logic + Security + Performance)
 ```
-mcp__workflow__task_submit({
+mcp__diy-workflow__task_submit({
   prompt: "Review the following code. Focus on:\n1. Logic bugs and edge cases\n2. Security vulnerabilities\n3. Performance issues\n4. Error handling gaps\n\nRate each finding: Critical / Major / Minor / Suggestion\nInclude specific line numbers.\n\nCode:\n$CODE",
   domain: "review"
 })
@@ -27,15 +27,19 @@ mcp__workflow__task_submit({
 
 ### Gemini Review (UI + Accessibility + Design)
 ```
-mcp__workflow__task_submit({
+mcp__diy-workflow__task_submit({
   prompt: "Review the following code. Focus on:\n1. UI/UX consistency\n2. Accessibility compliance\n3. Responsive design issues\n4. Component architecture\n\nRate each finding: Critical / Major / Minor / Suggestion\nInclude specific line numbers.\n\nCode:\n$CODE",
   domain: "frontend"
 })
 ```
 
-## Step 3: Poll Progress
+## Step 3: Collect Results
 
-Poll both tasks every 15-30 seconds using `task_status`. When complete, retrieve with `task_result`.
+Retrieve both results (each call waits automatically until the task completes):
+```
+mcp__diy-workflow__task_result({ task_id: "<codex_task_id>" })
+mcp__diy-workflow__task_result({ task_id: "<gemini_task_id>" })
+```
 
 ## Step 4: Synthesize Review
 

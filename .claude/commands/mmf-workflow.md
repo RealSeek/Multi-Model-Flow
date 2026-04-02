@@ -44,7 +44,7 @@ Submit tasks to BOTH models in parallel using `task_submit`:
 
 ### Backend Analysis (Codex)
 ```
-mcp__workflow__task_submit({
+mcp__diy-workflow__task_submit({
   prompt: "Analyze the following requirement and code context. Provide:\n1. Architecture analysis\n2. Implementation approach with Unified Diff patches\n3. Security considerations\n4. Performance implications\n\nRequirement: $REQUIREMENT\n\nCode Context:\n$CODE_CONTEXT\n\nTechnical References:\n$SEARCH_RESULTS",
   domain: "backend"
 })
@@ -52,7 +52,7 @@ mcp__workflow__task_submit({
 
 ### Frontend Analysis (Gemini)
 ```
-mcp__workflow__task_submit({
+mcp__diy-workflow__task_submit({
   prompt: "Analyze the following requirement and code context. Provide:\n1. UI/UX impact analysis\n2. Component architecture with Unified Diff patches\n3. Accessibility considerations\n4. Design consistency review\n\nRequirement: $REQUIREMENT\n\nCode Context:\n$CODE_CONTEXT\n\nTechnical References:\n$SEARCH_RESULTS",
   domain: "frontend"
 })
@@ -60,18 +60,12 @@ mcp__workflow__task_submit({
 
 Record both task IDs.
 
-## Phase 3: Progress Monitoring [模式：轮询]
+## Phase 3: Collect Results [模式：收集]
 
-Poll both tasks every 15-30 seconds:
+Retrieve both results (each call waits automatically until the task completes, no polling needed):
 ```
-mcp__workflow__task_status({ task_id: "<codex_task_id>" })
-mcp__workflow__task_status({ task_id: "<gemini_task_id>" })
-```
-
-Report progress to the user. When both complete, retrieve results:
-```
-mcp__workflow__task_result({ task_id: "<codex_task_id>" })
-mcp__workflow__task_result({ task_id: "<gemini_task_id>" })
+mcp__diy-workflow__task_result({ task_id: "<codex_task_id>" })
+mcp__diy-workflow__task_result({ task_id: "<gemini_task_id>" })
 ```
 
 ## Phase 4: Cross-Validation [模式：综合]
@@ -95,10 +89,15 @@ Apply the synthesized plan:
 
 Submit a final review task:
 ```
-mcp__workflow__task_submit({
+mcp__diy-workflow__task_submit({
   prompt: "Review the following code changes for bugs, security issues, and quality:\n\n$CHANGES",
   domain: "review"
 })
+```
+
+Retrieve the review result:
+```
+mcp__diy-workflow__task_result({ task_id: "<review_task_id>" })
 ```
 
 Report findings and apply fixes if needed.

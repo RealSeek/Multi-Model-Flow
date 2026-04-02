@@ -3,11 +3,10 @@ name: codex-task
 description: Delegate code analysis, review, or generation tasks to Codex (OpenAI) with context collection
 user-invocable: false
 allowed-tools:
-  - mcp__workflow__chat
-  - mcp__workflow__task_submit
-  - mcp__workflow__task_status
-  - mcp__workflow__task_result
-  - mcp__workflow__task_cancel
+  - mcp__diy-workflow__task_submit
+  - mcp__diy-workflow__task_status
+  - mcp__diy-workflow__task_result
+  - mcp__diy-workflow__task_cancel
   - mcp__ace-tool__codebase-retrieval
 ---
 
@@ -48,9 +47,15 @@ Instructions:
 
 ## Delegation
 
-- Quick tasks → `mcp__workflow__chat({ prompt, domain: "backend" })`
-- Long tasks → `mcp__workflow__task_submit({ prompt, domain: "backend" })` + poll every 15-30s
-- Follow-up → pass `session_id` from previous call
+All tasks use async submission:
+```
+mcp__diy-workflow__task_submit({ prompt, domain: "backend" })
+```
+Then retrieve the result (waits automatically):
+```
+mcp__diy-workflow__task_result({ task_id: "<task_id>" })
+```
+Follow-up → pass `session_id` from previous call to `task_submit`
 
 ## Result Presentation
 

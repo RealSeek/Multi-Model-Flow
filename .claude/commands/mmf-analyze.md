@@ -22,7 +22,7 @@ Fallback to context7 if grok-search fails.
 
 ### Codex Analysis
 ```
-mcp__workflow__task_submit({
+mcp__diy-workflow__task_submit({
   prompt: "Analyze the following code/requirement from a backend perspective:\n$CONTEXT\n\nProvide: architecture assessment, improvement suggestions, risk analysis.",
   domain: "backend"
 })
@@ -30,15 +30,19 @@ mcp__workflow__task_submit({
 
 ### Gemini Analysis
 ```
-mcp__workflow__task_submit({
+mcp__diy-workflow__task_submit({
   prompt: "Analyze the following code/requirement from a frontend perspective:\n$CONTEXT\n\nProvide: UX assessment, component analysis, design recommendations.",
   domain: "frontend"
 })
 ```
 
-## Step 3: Poll and Collect
+## Step 3: Collect Results
 
-Poll both tasks every 15-30 seconds using `task_status`. Retrieve results with `task_result` when complete.
+Retrieve both results (each call waits automatically until the task completes):
+```
+mcp__diy-workflow__task_result({ task_id: "<codex_task_id>" })
+mcp__diy-workflow__task_result({ task_id: "<gemini_task_id>" })
+```
 
 ## Step 4: Synthesize
 

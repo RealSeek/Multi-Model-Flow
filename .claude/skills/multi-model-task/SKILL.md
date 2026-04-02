@@ -3,11 +3,10 @@ name: multi-model-task
 description: Orchestrate tasks across Codex and Gemini with context collection, search fallback, and progress polling
 user-invocable: false
 allowed-tools:
-  - mcp__workflow__chat
-  - mcp__workflow__task_submit
-  - mcp__workflow__task_status
-  - mcp__workflow__task_result
-  - mcp__workflow__task_cancel
+  - mcp__diy-workflow__task_submit
+  - mcp__diy-workflow__task_status
+  - mcp__diy-workflow__task_result
+  - mcp__diy-workflow__task_cancel
   - mcp__ace-tool__codebase-retrieval
   - mcp__grok-search__web_search
   - mcp__grok-search__web_fetch
@@ -52,33 +51,25 @@ Activate this skill when the user says:
 
 ## Task Delegation
 
-### Quick tasks (< 30 seconds expected)
-Use `mcp__workflow__chat` for synchronous single-turn calls:
+All tasks use async `task_submit` + `task_result`:
 ```
-mcp__workflow__chat({ prompt: "...", domain: "backend" })
-```
-
-### Long tasks (> 30 seconds expected)
-Use `mcp__workflow__task_submit` + polling:
-```
-mcp__workflow__task_submit({ prompt: "...", domain: "backend" })
-// then poll with task_status every 15-30 seconds
+mcp__diy-workflow__task_submit({ prompt: "...", domain: "backend" })
+// then retrieve with task_result (waits automatically, no polling needed)
+mcp__diy-workflow__task_result({ task_id: "<task_id>" })
 ```
 
 ### Multi-turn conversations
 Pass `session_id` to continue a conversation:
 ```
-mcp__workflow__chat({ prompt: "follow-up question", session_id: "<previous session id>" })
+mcp__diy-workflow__task_submit({ prompt: "follow-up question", session_id: "<previous session id>", domain: "backend" })
 ```
 
-## Polling Protocol
+## Result Collection
 
-When a task is submitted:
-1. Wait 15 seconds before first poll
-2. Poll every 15-30 seconds with `task_status`
-3. Report progress to user (show partial output if meaningful)
-4. When status is "completed", retrieve with `task_result`
-5. If status is "failed", report error and suggest retry
+When tasks are submitted:
+1. Call `task_result` for each task — it waits automatically until the task completes (up to 300s by default)
+2. If a task takes longer than expected, `task_result` returns partial output — just call it again
+3. Use `task_status` only if you need a quick progress check without waiting
 
 ## Result Presentation
 

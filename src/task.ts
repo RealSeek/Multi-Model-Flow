@@ -70,6 +70,19 @@ export class TaskStore {
     return true;
   }
 
+  async waitForCompletion(taskId: string, timeoutMs: number): Promise<TaskState | undefined> {
+    const task = this.tasks.get(taskId);
+    if (!task) return undefined;
+    if (task.status !== "running") return task;
+
+    const hasTimeout = timeoutMs > 0;
+    const deadline = hasTimeout ? Date.now() + timeoutMs : 0;
+    while (task.status === "running" && (!hasTimeout || Date.now() < deadline)) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    return task;
+  }
+
   private cleanup(): void {
     const now = Date.now();
     for (const [id, task] of this.tasks) {

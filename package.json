@@ -1,9 +1,10 @@
 {
-  "name": "mmflow",
-  "version": "0.1.0",
+  "name": "multi-model-flow",
+  "version": "0.2.2",
   "description": "Multi-Model Flow - Lightweight multi-model orchestration MCP server for Claude Code",
   "type": "module",
   "bin": {
+    "multi-model-flow": "./dist/cli.js",
     "mmflow": "./dist/cli.js",
     "mmflow-server": "./dist/index.js"
   },

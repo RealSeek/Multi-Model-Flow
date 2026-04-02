@@ -13,34 +13,29 @@ If the task involves existing code, retrieve context first:
 mcp__ace-tool__codebase-retrieval({ information_request: "<describe relevant code>", directory_path: "<project root>" })
 ```
 
-## Step 2: Determine Task Length
+## Step 2: Submit Task
 
-### Quick task (simple question, short analysis)
-Use synchronous `chat`:
+All tasks use async `task_submit`:
 ```
-mcp__workflow__chat({
+mcp__diy-workflow__task_submit({
   prompt: "<user's request>\n\nContext:\n<code context>",
   domain: "frontend"
 })
 ```
 
-### Long task (deep analysis, large component review, diff generation)
-Use async `task_submit`:
+Then retrieve the result (waits automatically, no polling needed):
 ```
-mcp__workflow__task_submit({
-  prompt: "<user's request>\n\nContext:\n<code context>",
-  domain: "frontend"
-})
+mcp__diy-workflow__task_result({ task_id: "<task_id>" })
 ```
-Then poll with `task_status` every 15-30 seconds until complete. Retrieve with `task_result`.
 
 ## Step 3: Multi-turn Follow-up
 
 To continue the conversation, pass the `session_id` from the previous response:
 ```
-mcp__workflow__chat({
+mcp__diy-workflow__task_submit({
   prompt: "<follow-up question>",
-  session_id: "<session_id from previous call>"
+  session_id: "<session_id from previous call>",
+  domain: "frontend"
 })
 ```
 
