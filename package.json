@@ -1,0 +1,48 @@
+{
+  "name": "mmflow",
+  "version": "0.1.0",
+  "description": "Multi-Model Flow - Lightweight multi-model orchestration MCP server for Claude Code",
+  "type": "module",
+  "bin": {
+    "mmflow": "./dist/cli.js",
+    "mmflow-server": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    ".claude",
+    "CLAUDE.md",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "claude-code",
+    "mcp",
+    "multi-model",
+    "codex",
+    "gemini",
+    "orchestration",
+    "workflow"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RealSeek/Multi-Model-Flow.git"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "openai": "^4.104.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
